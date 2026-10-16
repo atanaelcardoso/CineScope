@@ -1,0 +1,17 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+*.sqlite3
+
+.env
+
+.vscode/
+.DS_Store
+Thumbs.db
+
+.docker/
