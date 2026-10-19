@@ -24,10 +24,11 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
+      - ./static:/app/static 
     ports:
       - "8000:8000"
     environment:
-      - Django_SETTINGS_MODULE=config.settings
+      - DJANGO_SETTINGS_MODULE=config.settings
       - DB_HOST=db
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
@@ -36,6 +37,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - DEBUG=${DEBUG}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - TMDB_BEARER_TOKEN=${TMDB_BEARER_TOKEN}
     depends_on:
       db:
         condition: service_healthy

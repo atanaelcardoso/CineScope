@@ -10,7 +10,6 @@ class TMDBClient:
             'Authorization': f'Bearer {self.token}',
             'accept': 'application/json'
         }
-
     def _get(self, endpoint, params=None):
         url = f"{self.base_url}/{endpoint}"
         try:
@@ -27,3 +26,11 @@ class TMDBClient:
             'page': page
         }
         return self._get('movie/popular', params=params)
+
+    def search_movies(self, query, page=1):
+        params = {
+            'query': query,
+            'language': 'pt-BR',
+            'page': page
+        }
+        return self._get('search/movie', params=params)
