@@ -1,7 +1,8 @@
 from django.urls import path
-from . import api_views, web_views
+from . import views 
 
 urlpatterns = [
-    path('', web_views.index, name='catalog_index'),
-    path('api/filmes/', api_views.index, name='catalog_movies_api'),
+    path('', views.index, name='catalog_index'),
+    path('favoritos/', views.favorites_view, name='catalog_favorites'),
+    path('assistidos/', views.watched, name='catalog_watched'),  # <-- Rota de assistidos conectada!
 ]

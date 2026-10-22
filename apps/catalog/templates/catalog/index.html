@@ -34,8 +34,11 @@
             <p style="margin: 0; color: #c2c7d0;">
                 {% if termo_pesquisa %} Resultados para: "{{ termo_pesquisa }}" {% else %} Filmes populares {% endif %}
             </p>
+        </div>  
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="/favoritos/" style="background: #cf222e; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; font-size: 0.9rem;">❤️ Meus Favoritos</a>
+            <a href="/assistidos/" style="background: #1f883d; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; font-size: 0.9rem;">👁️ Assistidos</a>
         </div>
-        
         <form class="search-form" method="GET" action="/">
             <input class="search-input" type="text" name="query" value="{{ termo_pesquisa }}" placeholder="Pesquisar filme...">
             <button class="search-button" type="submit">🔍 Buscar</button>
