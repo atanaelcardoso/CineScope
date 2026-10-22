@@ -2,3 +2,4 @@ django==3.2.12
 psycopg2-binary
 python-dotenv
 requests==2.31.0
+boto3==1.34.0
