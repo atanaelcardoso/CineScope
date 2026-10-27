@@ -53,6 +53,7 @@ function favoriteMovie(movieId, title, posterPath) {
     if (isAdded) {
         btn.classList.add('bg-red-600', 'text-white');
         btn.innerText = '❤️ Favorito';
+        fetch(`/api/evento-aws/?id=${movieId}&title=${encodeURIComponent(title)}&action=favorited`);
     } else {
         btn.classList.remove('bg-red-600', 'text-white');
         btn.innerText = '🤍 Favoritar';
@@ -67,6 +68,7 @@ function watchMovie(movieId, title, posterPath) {
     if (isAdded) {
         btn.classList.add('bg-green-600', 'text-white');
         btn.innerText = '✅ Assistido';
+        fetch(`/api/evento-aws/?id=${movieId}&title=${encodeURIComponent(title)}&action=marked_as_watched`);
     } else {
         btn.classList.remove('bg-green-600', 'text-white');
         btn.innerText = '👁️ Assistido';

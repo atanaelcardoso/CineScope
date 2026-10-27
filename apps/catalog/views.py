@@ -1,5 +1,24 @@
 from django.shortcuts import render
+from django.http import JsonResponse 
 from integrations.tmdb.client import TMDBClient
+from integrations.aws.client import AWSClient 
+
+def emitir_evento_aws(request):
+    if request.method == "GET":
+        movie_id = request.GET.get('id')
+        movie_title = request.GET.get('title', 'Filme Desconhecido')
+        tipo_acao = request.GET.get('action', 'added_to_collection') 
+
+        if movie_id:
+            aws = AWSClient()
+            aws.publish_movie_event(
+                event_type=f"movie.{tipo_acao}",
+                movie_id=movie_id,
+                movie_title=movie_title
+            )
+            return JsonResponse({"status": "Evento enviado para a AWS local com sucesso!"})
+            
+    return JsonResponse({"erro": "Requisição inválida"}, status=400)
 
 def index(request):
     termo_pesquisa = request.GET.get('query', '').strip()
