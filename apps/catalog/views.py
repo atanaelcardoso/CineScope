@@ -1,5 +1,8 @@
+import requests
+import urllib.parse 
 from django.shortcuts import render
 from django.http import JsonResponse 
+from django.views.decorators.csrf import csrf_exempt 
 from integrations.tmdb.client import TMDBClient
 from integrations.aws.client import AWSClient 
 
@@ -19,6 +22,35 @@ def emitir_evento_aws(request):
             return JsonResponse({"status": "Evento enviado para a AWS local com sucesso!"})
             
     return JsonResponse({"erro": "Requisição inválida"}, status=400)
+
+@csrf_exempt
+def backup_poster_to_s3_view(request):
+    movie_id = request.GET.get('id')
+    poster_path_bruto = request.GET.get('poster_path')
+    
+    if movie_id and poster_path_bruto:
+        poster_path = urllib.parse.unquote(poster_path_bruto).strip()
+        
+        if not poster_path.startswith('/'):
+            poster_path = f"/{poster_path}"
+            
+        tmdb_image_url = f"https://tmdb.org{poster_path}"
+        
+        try:
+            response = requests.get(tmdb_image_url, timeout=5)
+            if response.status_code == 200:
+                aws = AWSClient()
+                file_name = f"movie_{movie_id}.jpg"
+                s3_link = aws.upload_poster_to_s3(file_name, response.content)
+                return JsonResponse({"status": "sucesso", "s3_url": s3_link})
+            else:
+                print(f"⚠️ [TMDB] Imagem não encontrada para o filme {movie_id}. Status: {response.status_code}")
+                return JsonResponse({"status": "aviso", "mensagem": "Filme não possui imagem oficial no TMDB."}, status=200)
+        except Exception as e:
+            print(f"❌ [S3 ERROR] Falha no processamento: {e}")
+            return JsonResponse({"status": "erro", "detalhes": str(e)}, status=500)
+            
+    return JsonResponse({"status": "erro", "mensagem": "Parâmetros inválidos"}, status=400)
 
 def index(request):
     termo_pesquisa = request.GET.get('query', '').strip()

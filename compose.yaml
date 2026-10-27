@@ -49,8 +49,8 @@ services:
       - AWS_DEFAULT_REGION=us-east-1
       - DEPLOY_PRO=0
     volumes:
-      - "./infrastructure/localstack:/etc/localstack/init/ready.d"
-      - "localstack_data:/var/lib/localstack"
+      - ./infrastructure/localstack:/etc/localstack/init/ready.d
+      - localstack_data:/var/lib/localstack
 
 volumes:
   postgres_data:

@@ -54,6 +54,14 @@ function favoriteMovie(movieId, title, posterPath) {
         btn.classList.add('bg-red-600', 'text-white');
         btn.innerText = '❤️ Favorito';
         fetch(`/api/evento-aws/?id=${movieId}&title=${encodeURIComponent(title)}&action=favorited`);
+
+        if (posterPath && posterPath !== 'null' && posterPath !== '') {
+            let pathLimpo = posterPath;
+            if (pathLimpo.startsWith('/')) {
+                pathLimpo = pathLimpo.substring(1);
+            }
+            fetch(`/api/backup-s3/?id=${movieId}&poster_path=${encodeURIComponent(pathLimpo)}`);
+        }
     } else {
         btn.classList.remove('bg-red-600', 'text-white');
         btn.innerText = '🤍 Favoritar';
