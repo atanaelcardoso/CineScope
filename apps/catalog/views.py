@@ -34,7 +34,7 @@ def backup_poster_to_s3_view(request):
         if not poster_path.startswith('/'):
             poster_path = f"/{poster_path}"
             
-        tmdb_image_url = f"https://tmdb.org{poster_path}"
+        tmdb_image_url = f"https://image.tmdb.org/t/p/original{poster_path}"
         
         try:
             response = requests.get(tmdb_image_url, timeout=5)
@@ -42,6 +42,11 @@ def backup_poster_to_s3_view(request):
                 aws = AWSClient()
                 file_name = f"movie_{movie_id}.jpg"
                 s3_link = aws.upload_poster_to_s3(file_name, response.content)
+                if not s3_link:
+                    return JsonResponse(
+                        {"status": "erro", "mensagem": "Falha ao enviar imagem para o S3."},
+                        status=500
+                    )
                 return JsonResponse({"status": "sucesso", "s3_url": s3_link})
             else:
                 print(f"⚠️ [TMDB] Imagem não encontrada para o filme {movie_id}. Status: {response.status_code}")

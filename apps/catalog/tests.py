@@ -35,3 +35,43 @@ def test_movies_api_aws_events_returns_success(mock_boto, client):
     
     assert response.status_code == 200
     assert 'status' in response.json()
+
+@patch('apps.catalog.views.AWSClient')
+@patch('apps.catalog.views.requests.get')
+def test_backup_poster_uploads_tmdb_image_to_s3(mock_get, mock_aws, client):
+    mock_get.return_value = Mock(status_code=200, content=b'image-content')
+    mock_aws.return_value.upload_poster_to_s3.return_value = (
+        'http://localhost:4566/cinescope-media-bucket/posters/movie_123.jpg'
+    )
+
+    url = reverse('api_backup_s3')
+    response = client.get(f"{url}?id=123&poster_path=poster.jpg")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        'status': 'sucesso',
+        's3_url': 'http://localhost:4566/cinescope-media-bucket/posters/movie_123.jpg',
+    }
+    mock_get.assert_called_once_with(
+        'https://image.tmdb.org/t/p/original/poster.jpg',
+        timeout=5,
+    )
+    mock_aws.return_value.upload_poster_to_s3.assert_called_once_with(
+        'movie_123.jpg',
+        b'image-content',
+    )
+
+@patch('apps.catalog.views.AWSClient')
+@patch('apps.catalog.views.requests.get')
+def test_backup_poster_reports_s3_upload_failure(mock_get, mock_aws, client):
+    mock_get.return_value = Mock(status_code=200, content=b'image-content')
+    mock_aws.return_value.upload_poster_to_s3.return_value = None
+
+    url = reverse('api_backup_s3')
+    response = client.get(f"{url}?id=123&poster_path=poster.jpg")
+
+    assert response.status_code == 500
+    assert response.json() == {
+        'status': 'erro',
+        'mensagem': 'Falha ao enviar imagem para o S3.',
+    }
