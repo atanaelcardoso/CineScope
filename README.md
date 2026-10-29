@@ -13,6 +13,12 @@ Um catálogo web para descobrir filmes populares, pesquisar títulos e acompanha
 
 </div>
 
+## Acesse o site hospedado
+
+O CineScope já está online. **Clique no link abaixo para acessar o site:**
+
+👉 [Acessar o CineScope agora](https://cinescope-db.onrender.com)
+
 ## Sobre o projeto
 
 O CineScope combina uma interface em português com dados de filmes fornecidos pelo [TMDB](https://www.themoviedb.org/). É também um projeto de estudo que reúne Django, integração com serviços externos e uma infraestrutura AWS simulada localmente com LocalStack.
