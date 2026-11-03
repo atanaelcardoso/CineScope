@@ -53,15 +53,12 @@ function favoriteMovie(movieId, title, posterPath) {
     if (isAdded) {
         btn.classList.add('bg-red-600', 'text-white');
         btn.innerText = '❤️ Favorito';
-        
-        // 1. Envia o evento para o SNS (Já funcionando 100%!)
         fetch(`/api/evento-aws/?id=${movieId}&title=${encodeURIComponent(title)}&action=favorited`);
-        
-        // 2. INTEGRAÇÃO S3: Remove a barra inicial se ela existir para evitar o erro %2F no Django
+
         if (posterPath && posterPath !== 'null' && posterPath !== '') {
             let pathLimpo = posterPath;
             if (pathLimpo.startsWith('/')) {
-                pathLimpo = pathLimpo.substring(1); // Remove a primeira barra
+                pathLimpo = pathLimpo.substring(1);
             }
             fetch(`/api/backup-s3/?id=${movieId}&poster_path=${encodeURIComponent(pathLimpo)}`);
         }
@@ -70,7 +67,6 @@ function favoriteMovie(movieId, title, posterPath) {
         btn.innerText = '🤍 Favoritar';
     }
 }
-
 
 function watchMovie(movieId, title, posterPath) {
     const movieData = { title, poster_path: posterPath };

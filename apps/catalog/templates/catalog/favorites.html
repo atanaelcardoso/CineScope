@@ -54,7 +54,7 @@
                 article.id = `movie-card-${movie.id}`;
                 
                 const posterImg = movie.poster_path 
-                    ? `<img src="https://tmdb.org{movie.poster_path}" alt="Pôster de ${movie.title}">`
+                    ? `<img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Pôster de ${movie.title}">`
                     : `<div style="width: 100%; aspect-ratio: 2 / 3; background: #252b39; display: flex; align-items: center; justify-content: center; color: #c2c7d0;">Sem foto</div>`;
                 
                 article.innerHTML = `
