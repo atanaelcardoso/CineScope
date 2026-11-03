@@ -7,11 +7,35 @@ __pycache__/
 .Python
 
 *.sqlite3
+*.sqlite
+*.db
 
 .env
+.env.*
+!.env.example
+!.env.*.example
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+local_settings.py
+
+*.log
+*.dump
+*.bak
+*.backup
+*.old
+*.private.*
+*.confidential.*
+private/
+confidential/
 
 .vscode/
 .DS_Store
 Thumbs.db
+.pytest_cache/
 
 .docker/

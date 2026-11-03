@@ -95,6 +95,22 @@ def index(request):
     
     return render(request, 'catalog/index.html', contexto)
 
+def movie_detail(request, movie_id):
+    movie = TMDBClient().get_movie_details(movie_id)
+    if movie is None:
+        return render(
+            request,
+            'catalog/detail.html',
+            {'error': 'Não foi possível carregar os detalhes deste filme.'},
+            status=502,
+        )
+
+    context = {
+        'movie': movie,
+        'cast': movie.get('credits', {}).get('cast', [])[:10],
+    }
+    return render(request, 'catalog/detail.html', context)
+
 def favorites_view(request):
     """Renderiza a página que exibe os filmes favoritados pelo usuário"""
     return render(request, 'catalog/favorites.html')

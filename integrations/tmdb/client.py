@@ -34,3 +34,10 @@ class TMDBClient:
             'page': page
         }
         return self._get('search/movie', params=params)
+
+    def get_movie_details(self, movie_id):
+        params = {
+            'language': 'pt-BR',
+            'append_to_response': 'credits',
+        }
+        return self._get(f'movie/{movie_id}', params=params)

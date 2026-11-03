@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='catalog_index'),
+    path('filme/<int:movie_id>/', views.movie_detail, name='catalog_detail'),
     path('favoritos/', views.favorites_view, name='catalog_favorites'),
     path('assistidos/', views.watched, name='catalog_watched'),
     path('api/evento-aws/', csrf_exempt(views.emitir_evento_aws), name='api_evento_aws'),

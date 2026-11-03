@@ -1,8 +1,49 @@
 import os
+import re
 import pytest
 from unittest.mock import patch, Mock
 from django.urls import reverse
 from requests.exceptions import ConnectionError as RequestsConnectionError
+
+@patch('integrations.tmdb.client.TMDBClient._get')
+def test_movie_detail_displays_movie_metadata_and_cast(mock_get, client):
+    mock_get.return_value = {
+        'title': 'Filme de Teste',
+        'release_date': '2024-01-01',
+        'runtime': 120,
+        'vote_average': 8.25,
+        'genres': [{'name': 'Drama'}],
+        'overview': 'Uma sinopse de teste.',
+        'poster_path': '/poster.jpg',
+        'credits': {
+            'cast': [
+                {'name': f'Ator {number}', 'character': f'Personagem {number}'}
+                for number in range(12)
+            ],
+        },
+    }
+
+    response = client.get(reverse('catalog_detail', args=[123]))
+
+    assert response.status_code == 200
+    assert 'Filme de Teste' in response.content.decode()
+    assert 'Drama' in response.content.decode()
+    assert re.search(r'8[.,]\d/10', response.content.decode())
+    assert 'Uma sinopse de teste.' in response.content.decode()
+    assert 'Ator 0' in response.content.decode()
+    assert 'Ator 9' in response.content.decode()
+    assert 'Ator 10' not in response.content.decode()
+    mock_get.assert_called_once_with(
+        'movie/123',
+        params={'language': 'pt-BR', 'append_to_response': 'credits'},
+    )
+
+@patch('integrations.tmdb.client.TMDBClient._get', return_value=None)
+def test_movie_detail_reports_tmdb_failure(mock_get, client):
+    response = client.get(reverse('catalog_detail', args=[123]))
+
+    assert response.status_code == 502
+    assert 'Não foi possível carregar os detalhes deste filme.' in response.content.decode()
 
 @pytest.mark.django_db
 def test_pagina_inicial_carrega_com_sucesso(client):
