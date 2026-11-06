@@ -96,7 +96,8 @@ def index(request):
     return render(request, 'catalog/index.html', contexto)
 
 def movie_detail(request, movie_id):
-    movie = TMDBClient().get_movie_details(movie_id)
+    client = TMDBClient()
+    movie = client.get_movie_details(movie_id)
     if movie is None:
         return render(
             request,
@@ -105,9 +106,20 @@ def movie_detail(request, movie_id):
             status=502,
         )
 
+    watch_data = client.get_movie_watch_providers(movie_id)
+    watch_results = (watch_data or {}).get('results', {})
+    watch_providers = watch_results.get('BR') if isinstance(watch_results, dict) else None
+    print(f"🔍 [DEBUG] watch_providers: {watch_providers}")
+    
     context = {
         'movie': movie,
         'cast': movie.get('credits', {}).get('cast', [])[:10],
+        'watch_providers': watch_providers,
+        'watch_url': (
+            watch_providers.get('link')
+            if watch_providers and watch_providers.get('link')
+            else f'https://www.themoviedb.org/movie/{movie_id}/watch?locale=BR'
+        ),
     }
     return render(request, 'catalog/detail.html', context)
 

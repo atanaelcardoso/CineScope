@@ -41,3 +41,6 @@ class TMDBClient:
             'append_to_response': 'credits',
         }
         return self._get(f'movie/{movie_id}', params=params)
+
+    def get_movie_watch_providers(self, movie_id):
+        return self._get(f'movie/{movie_id}/watch/providers')

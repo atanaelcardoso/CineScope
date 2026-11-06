@@ -18,7 +18,12 @@
         .tag { padding: .35rem .7rem; border-radius: 999px; background: #252b39; color: #d7dbe2; }
         .rating { color: #f5c518; font-weight: bold; }
         .overview { color: #c2c7d0; line-height: 1.7; }
-        .cast-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .75rem; padding: 0; list-style: none; }
+        .btn-watch { background: #1f883d; color: #ffffff; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-size: 1rem; font-weight: bold; display: inline-flex; align-items: center; gap: 0.5rem; margin: 1rem 0; text-decoration: none; transition: background 0.2s; }
+        .btn-watch:hover { background: #2ea043; }
+        .provider-list { padding-left: 1.25rem; color: #c2c7d0; }
+        .provider-list a { color: #f5c518; }
+
+        .cast-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .75rem; padding: 0; list-style: none; margin-top: 1.5rem; }
         .cast-member { padding: .75rem; border-radius: .5rem; background: #191e2b; }
         .cast-member strong, .cast-member span { display: block; }
         .cast-member span { margin-top: .25rem; color: #aeb5c2; font-size: .9rem; }
@@ -54,12 +59,47 @@
                         {% if movie.vote_average %}<span class="tag rating">★ {{ movie.vote_average|floatformat:1 }}/10</span>{% endif %}
                         {% for genre in movie.genres %}<span class="tag">{{ genre.name }}</span>{% endfor %}
                     </div>
+                    <a href="{{ watch_url }}" target="_blank" rel="noopener noreferrer" class="btn-watch">▶️ Ver onde assistir no Brasil</a>
+
+                    {% if watch_providers.flatrate or watch_providers.rent or watch_providers.buy %}
+                        <section aria-label="Opções para assistir no Brasil">
+                            <h3>Disponível em</h3>
+                            {% if watch_providers.flatrate %}
+                                <p>Assinatura:</p>
+                                <ul class="provider-list">
+                                    {% for provider in watch_providers.flatrate %}
+                                        <li><a href="{{ watch_url }}" target="_blank" rel="noopener noreferrer">{{ provider.provider_name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% if watch_providers.rent %}
+                                <p>Aluguel:</p>
+                                <ul class="provider-list">
+                                    {% for provider in watch_providers.rent %}
+                                        <li><a href="{{ watch_url }}" target="_blank" rel="noopener noreferrer">{{ provider.provider_name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% if watch_providers.buy %}
+                                <p>Compra:</p>
+                                <ul class="provider-list">
+                                    {% for provider in watch_providers.buy %}
+                                        <li><a href="{{ watch_url }}" target="_blank" rel="noopener noreferrer">{{ provider.provider_name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </section>
+                    {% else %}
+                        <p class="overview">As opções de streaming não estão disponíveis no momento. Consulte a página do TMDB para verificar onde assistir.</p>
+                    {% endif %}
+
                     <h3>Sinopse</h3>
                     {% if movie.overview %}
                         <p class="overview">{{ movie.overview }}</p>
                     {% else %}
                         <p class="overview">Sinopse não disponível.</p>
                     {% endif %}
+
                     {% if cast %}
                         <h3>Elenco principal</h3>
                         <ul class="cast-list">
